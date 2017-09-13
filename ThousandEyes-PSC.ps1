@@ -3,7 +3,7 @@
 Function Get-TETestInfo {
 [CmdletBinding()]
     param(
-		[Parameter(ValueFromPipeline, HelpMessage="Specify the name of the test")]
+        [Parameter(ValueFromPipeline, HelpMessage="Specify the name of the test")]
         [string]$TestName = "Logan's Minecraft Server"
 	)
 $apiuser = "tylerapplebaum@gmail.com"
