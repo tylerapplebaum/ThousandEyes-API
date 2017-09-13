@@ -1,5 +1,4 @@
-
-
+#http://developer.thousandeyes.com/v6/test_data/
 
 Function Get-TETestInfo {
 [CmdletBinding()]
@@ -23,20 +22,26 @@ $TestInterval = $ParsedContent.test | Where-Object testName -eq $TestName | Sele
 Write-Output $TestID
 Write-Output $TestInterval
 }
-##### Create scheduled task to gather data every $TestInterval
+
 
 ##### Run code below to gather data; append to CSV
+
+$apiuser = "tylerapplebaum@gmail.com"
+$apipassword = "1xviw1h3qt40531eh6q3ddvkt5uqa1jy"
+$authorization = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($apiuser + ":" + $apipassword))
 
 $HeadersTest = @{
 	"accept"= "application/json"; 
 	"content-type"= "application/json"; 
 	"authorization"= "Basic $authorization"
-	"window" = "7d"
 }
 
+$QueryString = @{
+	"window" = "7d"
+}
 $ISO8601_7DaysAgo = Get-Date (Get-Date).AddDays(-7) -format s
 
-$response3 = Invoke-WebRequest "https://api.thousandeyes.com/v6/net/metrics/$TestID" -Headers $HeadersTest
+$response3 = Invoke-WebRequest "https://api.thousandeyes.com/v6/net/metrics/$TestID" -Headers $HeadersTest -Body $QueryString
 
 [void][System.Reflection.Assembly]::LoadWithPartialName("System.Web.Extensions")
 $jsonserial= New-Object -TypeName System.Web.Script.Serialization.JavaScriptSerializer
@@ -50,6 +55,4 @@ $Obj.net.metrics.minLatency
 $Obj.net.metrics.avgLatency
 $Obj.net.metrics.maxLatency
 
-#http://developer.thousandeyes.com/v6/test_data/
 
-##### OR all the above is BS... use the "window" in the header?
