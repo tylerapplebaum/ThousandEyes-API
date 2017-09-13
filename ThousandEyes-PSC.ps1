@@ -1,14 +1,20 @@
 #http://developer.thousandeyes.com/v6/test_data/
 #$ISO8601_7DaysAgo = Get-Date (Get-Date).AddDays(-7) -format s
 
+[CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeline, HelpMessage="Specify the API user")]
+        [string]$ApiUser = "tylerapplebaum@gmail.com",
+		[Parameter(ValueFromPipeline, HelpMessage="Specify the API password")]
+		[string]$ApiPassword = "1xviw1h3qt40531eh6q3ddvkt5uqa1jy"
+	)
+
 Function script:Get-TETestInfo {
 [CmdletBinding()]
     param(
         [Parameter(ValueFromPipeline, HelpMessage="Specify the name of the test")]
         [string]$TestName
 	)
-$ApiUser = "tylerapplebaum@gmail.com"
-$ApiPassword = "1xviw1h3qt40531eh6q3ddvkt5uqa1jy"
 $Authorization = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($ApiUser + ":" + $ApiPassword))
 $Headers = @{
 	"accept"= "application/json"; 
