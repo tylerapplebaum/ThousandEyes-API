@@ -30,19 +30,34 @@ Write-Verbose "Selected test ID $TestID"
 } #End Get-TETestInfo
 
 
-Function script:Get-TETestNetMetrics {
+Function script:Get-TETestNetMetrics { 
+
+<#
+####### Ruh roh! Haven't dealt with pagination....
+#Below is page 2 response. Need to feed this into the final psobject
+$global:MetricsResponse2 = Invoke-WebRequest "https://api.thousandeyes.com/v6/net/metrics/438133?format=json&page=2&from=2017-09-12+16%3A30%3A00&to=2017-09-19+16%3A35%3A00" -Headers $Headers
+
+[void][System.Reflection.Assembly]::LoadWithPartialName("System.Web.Extensions")
+$JsonSerial= New-Object -TypeName System.Web.Script.Serialization.JavaScriptSerializer
+$JsonSerial.MaxJsonLength  = 1167108864
+$global:RawPSObject2 = $JsonSerial.DeserializeObject($MetricsResponse2)
+
+#Maybe take page 2 and up and add it to the original page 1 object?
+
+#>
 
 $QueryString = @{
 	"window" = "7d" #Adjust this based on the amount of data wanted
+	"format" = "json"
 }
 
-$MetricsResponse = Invoke-WebRequest "https://api.thousandeyes.com/v6/net/metrics/$TestID" -Headers $Headers -Body $QueryString
+$global:MetricsResponse = Invoke-WebRequest "https://api.thousandeyes.com/v6/net/metrics/$TestID" -Headers $Headers -Body $QueryString
 
 #PowerShell's native ConvertFrom-Json cuts off the data, so a .NET assembly was used to do it right!
 [void][System.Reflection.Assembly]::LoadWithPartialName("System.Web.Extensions")
 $JsonSerial= New-Object -TypeName System.Web.Script.Serialization.JavaScriptSerializer
-$JsonSerial.MaxJsonLength  = 67108864
-$RawPSObject = $JsonSerial.DeserializeObject($MetricsResponse)
+$JsonSerial.MaxJsonLength  = 1167108864
+$global:RawPSObject = $JsonSerial.DeserializeObject($MetricsResponse)
 
 $i = 0 #Count for each item in the array of metric data
 $OutputList = New-Object System.Collections.Generic.List[System.Object]
