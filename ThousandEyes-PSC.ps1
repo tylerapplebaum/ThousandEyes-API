@@ -22,7 +22,7 @@ $Headers = @{
 	"authorization"= "Basic $Authorization"
 }
 
-$TestsResponse = Invoke-WebRequest https://api.thousandeyes.com/tests.json -Headers $headers
+$TestsResponse = Invoke-WebRequest https://api.thousandeyes.com/tests.json -Headers $Headers
 $ParsedContent = ConvertFrom-Json $TestsResponse.Content
 $TestID = $ParsedContent.test | Where-Object testName -eq $TestName | Select -ExpandProperty testId
 $TestInterval = $ParsedContent.test | Where-Object testName -eq $TestName | Select -ExpandProperty interval
